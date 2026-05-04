@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BarberFinance — Diagnóstico Financeiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0D0D0D;--dark:#1A1A1A;--dark2:#242424;--dark3:#2E2E2E;
+  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-mid:#E8C86A;--gold-dark:#8C6B1F;
+  --cream:#FAF7F0;--cream2:#F2EDE0;
+  --white:#FFFFFF;
+  --gray3:#C8C8C8;--gray4:#888;--gray5:#444;
+  --green:#1B6B3A;--green-light:#D4EDDE;
+  --red:#9B2335;--red-light:#F5D5DA;
+  --radius:8px;--radius-lg:14px;--radius-sm:5px;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--black);color:var(--white);min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--dark);border-bottom:1px solid #2A2A2A;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.hdr-name{font-size:16px;font-weight:800;color:var(--white);letter-spacing:-.3px}
+.hdr-sub{font-size:10px;color:rgba(255,255,255,.35);font-weight:400}
+.hdr-badge{font-size:10px;font-weight:700;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+
+/* HERO */
+.hero{background:var(--dark);border-bottom:1px solid #2A2A2A;padding:48px 24px 40px;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(201,168,76,.25);padding:5px 14px;border-radius:20px}
+.hero-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block}
+.hero h1{font-size:clamp(26px,5vw,42px);font-weight:800;line-height:1.1;margin-bottom:12px;letter-spacing:-.5px}
+.hero h1 span{color:var(--gold)}
+.hero p{font-size:14px;color:rgba(255,255,255,.5);max-width:480px;margin:0 auto 28px;line-height:1.7}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}
+.hero-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.4)}
+.hero-stat strong{color:var(--gold);font-weight:700;font-family:var(--mono)}
+
+/* PROGRESS */
+.progress-wrap{background:var(--dark);border-bottom:1px solid #2A2A2A;padding:16px 24px;position:sticky;top:60px;z-index:99}
+.progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.progress-label{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.05em}
+.progress-pct{font-size:11px;color:var(--gold);font-weight:700;font-family:var(--mono)}
+.progress-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .4s ease;width:0%}
+.progress-steps{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.pstep{flex:1;min-width:80px;height:28px;border-radius:4px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.3);cursor:pointer;transition:all .2s;white-space:nowrap;padding:0 8px}
+.pstep.active{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.pstep.done{background:rgba(27,107,58,.15);border-color:rgba(27,107,58,.4);color:#4CAF80}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:32px 24px 80px}
+
+/* BLOCO */
+.bloco{background:var(--dark);border:1px solid #2A2A2A;border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden;transition:border-color .2s}
+.bloco:hover{border-color:#3A3A3A}
+.bloco-hdr{padding:20px 24px;border-bottom:1px solid #2A2A2A;display:flex;align-items:flex-start;gap:14px}
+.bloco-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.bloco-info{flex:1}
+.bloco-num{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;opacity:.5}
+.bloco-title{font-size:16px;font-weight:800;letter-spacing:-.2px;margin-bottom:3px}
+.bloco-sub{font-size:12px;opacity:.45;line-height:1.5}
+.bloco-body{padding:20px 24px;display:flex;flex-direction:column;gap:20px}
+
+/* CORES DOS BLOCOS */
+.b1 .bloco-icon{background:rgba(26,74,138,.25);color:#6BA3E8}
+.b1 .bloco-num,.b1 .bloco-title{color:#6BA3E8}
+.b2 .bloco-icon{background:rgba(201,168,76,.15);color:var(--gold)}
+.b2 .bloco-num,.b2 .bloco-title{color:var(--gold)}
+.b3 .bloco-icon{background:rgba(155,35,53,.2);color:#E87070}
+.b3 .bloco-num,.b3 .bloco-title{color:#E87070}
+.b4 .bloco-icon{background:rgba(27,107,58,.2);color:#4CAF80}
+.b4 .bloco-num,.b4 .bloco-title{color:#4CAF80}
+.b5 .bloco-icon{background:rgba(255,255,255,.06);color:rgba(255,255,255,.6)}
+.b5 .bloco-num,.b5 .bloco-title{color:rgba(255,255,255,.8)}
+
+/* PERGUNTA */
+.pergunta{display:flex;flex-direction:column;gap:8px}
+.perg-label{display:flex;align-items:flex-start;gap:8px}
+.perg-num{font-size:10px;font-weight:700;font-family:var(--mono);min-width:24px;padding-top:1px;opacity:.4}
+.perg-txt{font-size:13px;line-height:1.6;color:rgba(255,255,255,.85);font-weight:500}
+.perg-hint{font-size:11px;color:rgba(255,255,255,.3);margin-left:32px;line-height:1.5}
+
+/* INPUTS */
+.inp-wrap{margin-left:32px}
+input[type=text],input[type=number],input[type=email],input[type=tel],textarea,select{
+  width:100%;padding:10px 14px;background:var(--dark2);border:1.5px solid #333;
+  border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);color:var(--white);
+  transition:border .15s;outline:none;appearance:none
+}
+input[type=number]{font-family:var(--mono);font-weight:600}
+input:focus,textarea:focus,select:focus{border-color:var(--gold);background:#2A2800}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer}
+select option{background:var(--dark2);color:var(--white)}
+
+/* RADIO / CHECKBOX */
+.radio-group,.check-group{display:flex;flex-direction:column;gap:6px}
+.radio-opt,.check-opt{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--dark2);border:1.5px solid #333;border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.radio-opt:hover,.check-opt:hover{border-color:#555}
+.radio-opt input,.check-opt input{display:none}
+.radio-opt.sel,.check-opt.sel{background:#2A2800;border-color:var(--gold)}
+.radio-marker{width:16px;height:16px;border-radius:50%;border:2px solid #555;flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.check-marker{width:16px;height:16px;border-radius:4px;border:2px solid #555;flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.radio-opt.sel .radio-marker{border-color:var(--gold);background:var(--gold)}
+.radio-opt.sel .radio-marker::after{content:'';width:6px;height:6px;background:var(--black);border-radius:50%}
+.check-opt.sel .check-marker{border-color:var(--gold);background:var(--gold)}
+.check-opt.sel .check-marker::after{content:'✓';font-size:10px;color:var(--black);font-weight:700}
+.radio-text,.check-text{font-size:13px;color:rgba(255,255,255,.75);line-height:1.4}
+
+/* DADOS PESSOAIS */
+.dados-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.dados-grid{grid-template-columns:1fr}}
+.campo{display:flex;flex-direction:column;gap:5px}
+.campo label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,#2A2A2A,transparent);margin:4px 0}
+
+/* SUBMIT AREA */
+.submit-area{background:var(--dark);border:1px solid #2A2A2A;border-radius:var(--radius-lg);padding:28px 24px;text-align:center;margin-top:8px}
+.submit-title{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.submit-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px;line-height:1.6}
+.btn-enviar{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:var(--black);font-family:var(--font);font-size:14px;font-weight:800;padding:14px 32px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.btn-enviar:hover{background:var(--gold-mid);transform:translateY(-1px)}
+.btn-enviar:active{transform:translateY(0)}
+.btn-enviar svg{width:20px;height:20px}
+.submit-note{font-size:11px;color:rgba(255,255,255,.25);margin-top:14px;line-height:1.6}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);border:1px solid var(--gold);border-radius:var(--radius);padding:12px 20px;font-size:13px;font-weight:600;color:var(--gold);z-index:999;opacity:0;transition:all .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* DADOS SECTION */
+.dados-section{background:var(--dark);border:1px solid #2A2A2A;border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px}
+.dados-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px}
+
+@media(max-width:600px){
+  .main{padding:24px 16px 80px}
+  .bloco-hdr{padding:16px}
+  .bloco-body{padding:16px;gap:16px}
+  .hero{padding:32px 16px 28px}
+  .hdr-badge{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">✂</div>
+    <div>
+      <div class="hdr-name">BarberFinance</div>
+      <div class="hdr-sub">Diagnóstico Financeiro</div>
+    </div>
+  </div>
+  <div class="hdr-badge">DIAGNÓSTICO GRATUITO</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Cadeira de Dono · Paulo Henrique</div>
+  <h1>Descubra o que está<br><span>travando seu dinheiro</span></h1>
+  <p>Responda com honestidade. Não existe resposta certa ou errada. Quanto mais preciso você for, mais certeiro será o diagnóstico.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>25</strong> perguntas</div>
+    <div class="hero-stat"><strong>~15</strong> minutos</div>
+    <div class="hero-stat"><strong>100%</strong> confidencial</div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span class="progress-label">SEU PROGRESSO</span>
+    <span class="progress-pct" id="pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+  <div class="progress-steps">
+    <div class="pstep active" onclick="scrollBloco(1)">01 · Básico</div>
+    <div class="pstep" onclick="scrollBloco(2)">02 · Dinheiro</div>
+    <div class="pstep" onclick="scrollBloco(3)">03 · Dor real</div>
+    <div class="pstep" onclick="scrollBloco(4)">04 · Assinatura</div>
+    <div class="pstep" onclick="scrollBloco(5)">05 · Sonho</div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- DADOS PESSOAIS -->
+  <div class="dados-section">
+    <div class="dados-title">Seus dados</div>
+    <div class="dados-grid">
+      <div class="campo"><label>Nome completo *</label><input type="text" id="d_nome" placeholder="Seu nome"></div>
+      <div class="campo"><label>Nome da barbearia *</label><input type="text" id="d_barbearia" placeholder="Nome da barbearia"></div>
+      <div class="campo"><label>WhatsApp *</label><input type="tel" id="d_whats" placeholder="(62) 9 9999-9999"></div>
+      <div class="campo"><label>Cidade / Estado</label><input type="text" id="d_cidade" placeholder="Goiânia / GO"></div>
+    </div>
+  </div>
+
+  <!-- BLOCO 1 -->
+  <div class="bloco b1" id="bloco1">
+    <div class="bloco-hdr">
+      <div class="bloco-icon">📊</div>
+      <div class="bloco-info">
+        <div class="bloco-num">Bloco 01 de 05</div>
+        <div class="bloco-title">O básico do negócio</div>
+        <div class="bloco-sub">Perguntas sobre a estrutura atual da sua barbearia</div>
+      </div>
+    </div>
+    <div class="bloco-body">
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">01</span><span class="perg-txt">Qual é o faturamento bruto médio da sua barbearia por mês? (tudo que entra no caixa — serviços + produtos + planos de assinatura)</span></div>
+        <div class="perg-hint">Se não souber exato, coloque sua melhor estimativa.</div>
+        <div class="inp-wrap"><input type="number" id="q1" placeholder="Ex: 18000" oninput="atualizar()"></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">02</span><span class="perg-txt">Quantas cadeiras ativas você tem? Quantos dias por semana a barbearia funciona?</span></div>
+        <div class="inp-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input type="number" id="q2a" placeholder="Nº de cadeiras" oninput="atualizar()">
+          <input type="number" id="q2b" placeholder="Dias por semana" oninput="atualizar()">
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">03</span><span class="perg-txt">Quantos barbeiros trabalham com você hoje? Como cada um é remunerado?</span></div>
+        <div class="perg-hint">Descreva: fixo, comissão % ou aluguel de cadeira — e o valor aproximado de cada modelo.</div>
+        <div class="inp-wrap"><textarea id="q3" placeholder="Ex: 3 barbeiros — 2 no modelo comissão 40%, 1 no aluguel de R$800/mês" oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">04</span><span class="perg-txt">Quais são seus custos fixos mensais? Liste os principais com os valores aproximados.</span></div>
+        <div class="perg-hint">Aluguel, energia, sistema de agendamento, contador, salários fixos, internet...</div>
+        <div class="inp-wrap"><textarea id="q4" placeholder="Ex: Aluguel R$2.800, energia R$600, sistema R$150, contador R$350..." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">05</span><span class="perg-txt">Você tem CNPJ ativo? Qual é o seu regime tributário?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q5">
+            <label class="radio-opt" onclick="selRadio(this,'q5')"><input type="radio" name="q5" value="MEI"><div class="radio-marker"></div><span class="radio-text">MEI (Microempreendedor Individual)</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q5')"><input type="radio" name="q5" value="Simples Nacional"><div class="radio-marker"></div><span class="radio-text">Simples Nacional</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q5')"><input type="radio" name="q5" value="Lucro Presumido"><div class="radio-marker"></div><span class="radio-text">Lucro Presumido</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q5')"><input type="radio" name="q5" value="Sem CNPJ"><div class="radio-marker"></div><span class="radio-text">Não tenho CNPJ / não sei</span></label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BLOCO 2 -->
+  <div class="bloco b2" id="bloco2">
+    <div class="bloco-hdr">
+      <div class="bloco-icon">💸</div>
+      <div class="bloco-info">
+        <div class="bloco-num">Bloco 02 de 05</div>
+        <div class="bloco-title">Onde o dinheiro some</div>
+        <div class="bloco-sub">Aqui começa a ficar interessante — e um pouco desconfortável</div>
+      </div>
+    </div>
+    <div class="bloco-body">
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">06</span><span class="perg-txt">Seus barbeiros são MEI e emitem nota para receber? Você conhece a Lei Salão Parceiro?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q6">
+            <label class="radio-opt" onclick="selRadio(this,'q6')"><input type="radio" name="q6" value="MEI com nota e conheço a lei"><div class="radio-marker"></div><span class="radio-text">Sim, são MEI, emitem nota e conheço a Lei Salão Parceiro</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q6')"><input type="radio" name="q6" value="MEI mas não uso a lei"><div class="radio-marker"></div><span class="radio-text">São MEI mas não uso a Lei Salão Parceiro</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q6')"><input type="radio" name="q6" value="Não são MEI"><div class="radio-marker"></div><span class="radio-text">Não são MEI — trabalham como CLT ou autônomos</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q6')"><input type="radio" name="q6" value="Não sabia dessa lei"><div class="radio-marker"></div><span class="radio-text">Nunca ouvi falar dessa lei</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">07</span><span class="perg-txt">Quanto você repassa para cada barbeiro por atendimento ou por mês? Esse valor está formalizado em contrato?</span></div>
+        <div class="inp-wrap"><textarea id="q7" placeholder="Ex: 40% do serviço para cada barbeiro. Sem contrato formal." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">08</span><span class="perg-txt">Você sabe qual é o custo real de cada serviço que oferece?</span></div>
+        <div class="perg-hint">Custo real = produtos usados + comissão do barbeiro + rateio de aluguel + energia + imposto.</div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q8">
+            <label class="radio-opt" onclick="selRadio(this,'q8')"><input type="radio" name="q8" value="Sim, sei o custo real"><div class="radio-marker"></div><span class="radio-text">Sim, sei o custo real de cada serviço</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q8')"><input type="radio" name="q8" value="Tenho ideia aproximada"><div class="radio-marker"></div><span class="radio-text">Tenho uma ideia aproximada</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q8')"><input type="radio" name="q8" value="Não sei o custo real"><div class="radio-marker"></div><span class="radio-text">Não sei — nunca calculei isso</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">09</span><span class="perg-txt">Como você define o preço dos seus serviços hoje?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q9">
+            <label class="radio-opt" onclick="selRadio(this,'q9')"><input type="radio" name="q9" value="Baseado no custo real"><div class="radio-marker"></div><span class="radio-text">Calculo com base no custo real + margem</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q9')"><input type="radio" name="q9" value="Baseado no concorrente"><div class="radio-marker"></div><span class="radio-text">Olho o que o concorrente cobra e sigo a média</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q9')"><input type="radio" name="q9" value="Baseado no que acho justo"><div class="radio-marker"></div><span class="radio-text">Cobro o que acho justo pelo serviço</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q9')"><input type="radio" name="q9" value="Sem critério definido"><div class="radio-marker"></div><span class="radio-text">Não tenho critério definido</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">10</span><span class="perg-txt">Você vende produtos na barbearia? Se sim, sabe qual é a margem de lucro de cada produto?</span></div>
+        <div class="inp-wrap"><textarea id="q10" placeholder="Ex: Vendo pomadas e shampoos. Não sei a margem exata — compro por R$25 e vendo por R$50." oninput="atualizar()"></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BLOCO 3 -->
+  <div class="bloco b3" id="bloco3">
+    <div class="bloco-hdr">
+      <div class="bloco-icon">🔍</div>
+      <div class="bloco-info">
+        <div class="bloco-num">Bloco 03 de 05</div>
+        <div class="bloco-title">A dor real</div>
+        <div class="bloco-sub">Seja honesto — é aqui que o diagnóstico fica preciso</div>
+      </div>
+    </div>
+    <div class="bloco-body">
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">11</span><span class="perg-txt">Você sabe quanto sobra no final do mês — de verdade? Não o faturamento. O que fica no seu bolso depois de pagar tudo.</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q11">
+            <label class="radio-opt" onclick="selRadio(this,'q11')"><input type="radio" name="q11" value="Sei exato"><div class="radio-marker"></div><span class="radio-text">Sei o valor exato que sobra</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q11')"><input type="radio" name="q11" value="Tenho ideia aproximada"><div class="radio-marker"></div><span class="radio-text">Tenho uma ideia aproximada</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q11')"><input type="radio" name="q11" value="Não sei"><div class="radio-marker"></div><span class="radio-text">Não sei — o dinheiro some e não entendo por quê</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">12</span><span class="perg-txt">Você mistura as finanças da barbearia com as suas pessoais? Tem conta PJ separada?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q12">
+            <label class="radio-opt" onclick="selRadio(this,'q12')"><input type="radio" name="q12" value="PJ separado"><div class="radio-marker"></div><span class="radio-text">Tenho conta PJ separada e não misturo</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q12')"><input type="radio" name="q12" value="Misturo mas quero organizar"><div class="radio-marker"></div><span class="radio-text">Misturo, mas quero organizar isso</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q12')"><input type="radio" name="q12" value="Misturo tudo"><div class="radio-marker"></div><span class="radio-text">Misturo tudo — mesma conta para tudo</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">13</span><span class="perg-txt">Você tem um pró-labore definido — um valor fixo que retira como seu salário de dono todo mês?</span></div>
+        <div class="inp-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
+          <div>
+            <div class="radio-group" id="q13r">
+              <label class="radio-opt" onclick="selRadio(this,'q13r')"><input type="radio" name="q13r" value="Sim"><div class="radio-marker"></div><span class="radio-text">Sim, tenho valor fixo</span></label>
+              <label class="radio-opt" onclick="selRadio(this,'q13r')"><input type="radio" name="q13r" value="Não"><div class="radio-marker"></div><span class="radio-text">Não, retiro o que preciso</span></label>
+            </div>
+          </div>
+          <input type="number" id="q13v" placeholder="Valor mensal (R$)" oninput="atualizar()">
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">14</span><span class="perg-txt">Você sabe quantos atendimentos precisa fazer por dia para não ter prejuízo — seu ponto de equilíbrio?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q14">
+            <label class="radio-opt" onclick="selRadio(this,'q14')"><input type="radio" name="q14" value="Sei o ponto de equilíbrio"><div class="radio-marker"></div><span class="radio-text">Sim, sei o número exato</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q14')"><input type="radio" name="q14" value="Tenho ideia"><div class="radio-marker"></div><span class="radio-text">Tenho uma ideia, mas não calculei</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q14')"><input type="radio" name="q14" value="Não sei o ponto de equilíbrio"><div class="radio-marker"></div><span class="radio-text">Nunca calculei isso</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">15</span><span class="perg-txt">Você tem controle de caixa diário?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q15">
+            <label class="radio-opt" onclick="selRadio(this,'q15')"><input type="radio" name="q15" value="Sistema profissional"><div class="radio-marker"></div><span class="radio-text">Sim, uso um sistema profissional</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q15')"><input type="radio" name="q15" value="Planilha ou caderno"><div class="radio-marker"></div><span class="radio-text">Uso planilha ou caderno</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q15')"><input type="radio" name="q15" value="Nenhum controle"><div class="radio-marker"></div><span class="radio-text">Não tenho nenhum controle</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">16</span><span class="perg-txt">Nos últimos 3 meses, você conseguiu guardar algum dinheiro da barbearia como reserva?</span></div>
+        <div class="inp-wrap"><input type="text" id="q16" placeholder="Ex: Guardei R$500 no mês passado, mas nos outros dois não sobrou nada." oninput="atualizar()"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BLOCO 4 -->
+  <div class="bloco b4" id="bloco4">
+    <div class="bloco-hdr">
+      <div class="bloco-icon">📋</div>
+      <div class="bloco-info">
+        <div class="bloco-num">Bloco 04 de 05</div>
+        <div class="bloco-title">Plano de assinatura</div>
+        <div class="bloco-sub">O buraco que quase ninguém enxerga — responda mesmo que não tenha plano</div>
+      </div>
+    </div>
+    <div class="bloco-body">
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">17</span><span class="perg-txt">Você tem plano de assinatura na barbearia? Se sim, quantos assinantes ativos tem hoje?</span></div>
+        <div class="inp-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
+          <div>
+            <div class="radio-group" id="q17r">
+              <label class="radio-opt" onclick="selRadio(this,'q17r')"><input type="radio" name="q17r" value="Sim"><div class="radio-marker"></div><span class="radio-text">Sim, tenho</span></label>
+              <label class="radio-opt" onclick="selRadio(this,'q17r')"><input type="radio" name="q17r" value="Não"><div class="radio-marker"></div><span class="radio-text">Não tenho ainda</span></label>
+            </div>
+          </div>
+          <input type="number" id="q17v" placeholder="Nº de assinantes ativos" oninput="atualizar()">
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">18</span><span class="perg-txt">Qual é o valor do seu plano de assinatura? Como você chegou nesse preço?</span></div>
+        <div class="perg-hint">Se não tem plano, descreva como você acha que deveria precificar.</div>
+        <div class="inp-wrap"><textarea id="q18" placeholder="Ex: Plano a R$120/mês com 2 cortes. Defini esse valor olhando o que outros cobram na região." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">19</span><span class="perg-txt">Quantas vezes em média um assinante usa a barbearia por mês? Você sabe o custo real de cada visita dele?</span></div>
+        <div class="inp-wrap"><input type="text" id="q19" placeholder="Ex: Vem 2x por mês em média. Não sei o custo real de cada visita." oninput="atualizar()"></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">20</span><span class="perg-txt">Você sabe quantos assinantes precisa ter para cobrir todos os seus custos fixos mensais?</span></div>
+        <div class="inp-wrap">
+          <div class="radio-group" id="q20">
+            <label class="radio-opt" onclick="selRadio(this,'q20')"><input type="radio" name="q20" value="Sei o número"><div class="radio-marker"></div><span class="radio-text">Sim, sei o número exato</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q20')"><input type="radio" name="q20" value="Tenho estimativa"><div class="radio-marker"></div><span class="radio-text">Tenho uma estimativa</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'q20')"><input type="radio" name="q20" value="Nunca calculei"><div class="radio-marker"></div><span class="radio-text">Nunca pensei nisso</span></label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BLOCO 5 -->
+  <div class="bloco b5" id="bloco5">
+    <div class="bloco-hdr">
+      <div class="bloco-icon">🎯</div>
+      <div class="bloco-info">
+        <div class="bloco-num">Bloco 05 de 05</div>
+        <div class="bloco-title">Sonho e trava</div>
+        <div class="bloco-sub">Última parte — fale com suas próprias palavras</div>
+      </div>
+    </div>
+    <div class="bloco-body">
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">21</span><span class="perg-txt">Quanto você quer sobrar por mês no final de tudo — seu lucro líquido ideal como dono?</span></div>
+        <div class="inp-wrap"><input type="number" id="q21" placeholder="Ex: 5000" oninput="atualizar()"></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">22</span><span class="perg-txt">Se precisasse assumir um compromisso financeiro hoje — equipamento, reforma, contratação — você saberia se tem condição? Como decidiria?</span></div>
+        <div class="inp-wrap"><textarea id="q22" placeholder="Ex: Decidiria pelo feeling. Não tenho como saber ao certo se tenho caixa para isso." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">23</span><span class="perg-txt">Qual é o maior problema financeiro da sua barbearia hoje — na sua visão?</span></div>
+        <div class="inp-wrap"><textarea id="q23" placeholder="Escreva com suas próprias palavras..." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">24</span><span class="perg-txt">Você já tentou organizar as finanças antes? O que aconteceu?</span></div>
+        <div class="inp-wrap"><textarea id="q24" placeholder="Ex: Tentei uma planilha mas abandonei depois de 2 semanas..." oninput="atualizar()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="pergunta">
+        <div class="perg-label"><span class="perg-num">25</span><span class="perg-txt">Daqui a 6 meses, o que você quer que seja diferente na sua barbearia em relação ao dinheiro?</span></div>
+        <div class="inp-wrap"><textarea id="q25" placeholder="Escreva seu objetivo com honestidade..." oninput="atualizar()"></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <div class="submit-title">Pronto para receber seu diagnóstico?</div>
+    <div class="submit-sub">Ao clicar em enviar, suas respostas serão enviadas via WhatsApp para Paulo Henrique. O diagnóstico personalizado chega em até 24h.</div>
+    <button class="btn-enviar" onclick="enviar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.66A2 2 0 012 .99h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+      Enviar pelo WhatsApp
+    </button>
+    <div class="submit-note">Suas respostas são 100% confidenciais e usadas apenas para o diagnóstico personalizado.<br>Paulo Henrique · BarberFinance · (62) 9 9949-8799</div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast">✓ Abrindo WhatsApp...</div>
+
+<script>
+const WHATS_NUM = '5562999498799';
+
+function selRadio(el, name){
+  document.querySelectorAll(`[id="${name}"] .radio-opt`).forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  atualizar();
+}
+
+function getRadio(name){
+  const sel = document.querySelector(`[id="${name}"] .radio-opt.sel input`);
+  return sel ? sel.value : '';
+}
+
+function atualizar(){
+  const campos = [
+    document.getElementById('d_nome')?.value,
+    document.getElementById('q1')?.value,
+    document.getElementById('q2a')?.value,
+    document.getElementById('q2b')?.value,
+    document.getElementById('q3')?.value,
+    document.getElementById('q4')?.value,
+    getRadio('q5'),
+    getRadio('q6'),
+    document.getElementById('q7')?.value,
+    getRadio('q8'),
+    getRadio('q9'),
+    document.getElementById('q10')?.value,
+    getRadio('q11'),
+    getRadio('q12'),
+    getRadio('q13r'),
+    getRadio('q14'),
+    getRadio('q15'),
+    document.getElementById('q16')?.value,
+    getRadio('q17r'),
+    document.getElementById('q18')?.value,
+    document.getElementById('q19')?.value,
+    getRadio('q20'),
+    document.getElementById('q21')?.value,
+    document.getElementById('q22')?.value,
+    document.getElementById('q23')?.value,
+    document.getElementById('q24')?.value,
+    document.getElementById('q25')?.value,
+  ];
+  const preenchidos = campos.filter(v=>v&&v.trim()!=='').length;
+  const total = campos.length;
+  const pct = Math.round((preenchidos/total)*100);
+  document.getElementById('fill').style.width = pct+'%';
+  document.getElementById('pct').textContent = pct+'%';
+
+  const steps = document.querySelectorAll('.pstep');
+  const blocos = [
+    ['q1','q2a','q2b','q3','q4',getRadio('q5')],
+    [getRadio('q6'),document.getElementById('q7')?.value,getRadio('q8'),getRadio('q9'),document.getElementById('q10')?.value],
+    [getRadio('q11'),getRadio('q12'),getRadio('q13r'),getRadio('q14'),getRadio('q15'),document.getElementById('q16')?.value],
+    [getRadio('q17r'),document.getElementById('q18')?.value,document.getElementById('q19')?.value,getRadio('q20')],
+    [document.getElementById('q21')?.value,document.getElementById('q22')?.value,document.getElementById('q23')?.value,document.getElementById('q24')?.value,document.getElementById('q25')?.value]
+  ];
+  blocos.forEach((b,i)=>{
+    const filled = b.filter(v=>v&&v.trim()!=='').length;
+    if(filled===b.length) steps[i].classList.add('done');
+    else steps[i].classList.remove('done');
+  });
+}
+
+function scrollBloco(n){
+  document.getElementById('bloco'+n).scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.pstep').forEach((s,i)=>{
+    s.classList.toggle('active', i===n-1);
+  });
+}
+
+function val(id){ return document.getElementById(id)?.value?.trim()||'—'; }
+
+function enviar(){
+  const nome = val('d_nome');
+  if(nome==='—'){ alert('Por favor, preencha seu nome antes de enviar.'); return; }
+
+  const msg =
+`✂ *BARBERFINANCE — DIAGNÓSTICO FINANCEIRO*
+━━━━━━━━━━━━━━━━━━━━━━
+
+*DADOS DO CLIENTE*
+Nome: ${val('d_nome')}
+Barbearia: ${val('d_barbearia')}
+WhatsApp: ${val('d_whats')}
+Cidade: ${val('d_cidade')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+*BLOCO 01 — O BÁSICO*
+
+01. Faturamento bruto médio/mês: R$ ${val('q1')}
+02. Cadeiras ativas: ${val('q2a')} | Dias/semana: ${val('q2b')}
+03. Barbeiros e remuneração: ${val('q3')}
+04. Custos fixos: ${val('q4')}
+05. Regime tributário: ${getRadio('q5')||'—'}
+
+━━━━━━━━━━━━━━━━━━━━━━
+*BLOCO 02 — ONDE O DINHEIRO SOME*
+
+06. Barbeiros MEI / Lei Salão Parceiro: ${getRadio('q6')||'—'}
+07. Repasse barbeiros: ${val('q7')}
+08. Sabe o custo real dos serviços: ${getRadio('q8')||'—'}
+09. Como define preço: ${getRadio('q9')||'—'}
+10. Venda de produtos: ${val('q10')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+*BLOCO 03 — A DOR REAL*
+
+11. Sabe quanto sobra/mês: ${getRadio('q11')||'—'}
+12. Mistura PF/PJ: ${getRadio('q12')||'—'}
+13. Pró-labore: ${getRadio('q13r')||'—'} | Valor: R$ ${val('q13v')}
+14. Conhece ponto de equilíbrio: ${getRadio('q14')||'—'}
+15. Controle de caixa: ${getRadio('q15')||'—'}
+16. Reserva últimos 3 meses: ${val('q16')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+*BLOCO 04 — PLANO DE ASSINATURA*
+
+17. Tem assinatura: ${getRadio('q17r')||'—'} | Assinantes: ${val('q17v')}
+18. Precificação do plano: ${val('q18')}
+19. Frequência e custo/visita: ${val('q19')}
+20. Sabe PE de assinantes: ${getRadio('q20')||'—'}
+
+━━━━━━━━━━━━━━━━━━━━━━
+*BLOCO 05 — SONHO E TRAVA*
+
+21. Lucro líquido ideal/mês: R$ ${val('q21')}
+22. Como decide investimento: ${val('q22')}
+23. Maior problema financeiro: ${val('q23')}
+24. Tentou organizar antes: ${val('q24')}
+25. Objetivo em 6 meses: ${val('q25')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+_Enviado via BarberFinance · Diagnóstico Financeiro_`;
+
+  const url = `https://wa.me/${WHATS_NUM}?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
+
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3000);
+}
+
+// Scroll observer para highlight de steps
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id = e.target.id;
+      const n = parseInt(id.replace('bloco',''));
+      document.querySelectorAll('.pstep').forEach((s,i)=>{
+        s.classList.toggle('active',i===n-1);
+      });
+    }
+  });
+},{threshold:0.3});
+['bloco1','bloco2','bloco3','bloco4','bloco5'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) observer.observe(el);
+});
+</script>
+</body>
+</html>
